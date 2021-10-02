@@ -20,5 +20,4 @@ const style = request.bulk(table, (err, result) => {
   }
 })
 
-module.exports = style;
 
