@@ -1,5 +1,5 @@
 const sql = require('mssql');
-// const sqlConfig = require('./controller/index.js');
+//const sqlConfig = require('./controller/index.js');
 
 const sqlConfig = {
   user: "sa",
@@ -21,7 +21,7 @@ const skuTable = async () => {
   let pool;
   try {
    // make sure that any items are correctly URL encoded in the connection string
-   console.log(`MSSQL connection opening with server ${sqlConfig.server}...`)
+   console.log(`MSSQL connection opening with ${sqlConfig.server}...`)
    pool = await sql.connect(sqlConfig)
    const { tableset } = await sql.query` IF NOT EXISTS (SELECT [name] FROM sys.tables WHERE [name] = 'sku')
    CREATE TABLE skus (
@@ -30,9 +30,9 @@ const skuTable = async () => {
     , size nvarchar(55) NOT NULL
     , quantity nvarchar(55) NULL
    ) `;
-   console.log('sku table is available')
+   console.log('skus table is has been created, please load data...')
   } catch (err) {
-   console.log('Query test error: '+ err) // ... error checks
+   console.log('Query error ' + err) // ... error checks
   } finally {
     await pool.close();
     console.log('Connection closed.')

@@ -10,7 +10,7 @@ const products = require('./routes/products');
 const sdc = require('./routes/sdc');
 
 const sqlConfig = require('./controller/index.js');
-const styles = require('./controller/models/styles.js');
+const sku = require('./controller/models/skus');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -21,10 +21,6 @@ app.use('/sdc', sdc);
 
 app.listen(port, function() {
   console.log(`Sever is listening on port ${port}`);
-  }).on('error', function(err) {
-       if (err.errno === 'EADDRINUSE') {
-          console.log(`Port ${port} is already in use!`);
-       } else {
-         console.log(`Error returned for express server: ${err}`);
-        }
-      });
+  console.log(JSON.stringify(sqlConfig));
+  sku();
+  }).on('error', (err) => (console.log('Express.js ' + err)));
