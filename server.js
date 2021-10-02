@@ -9,6 +9,9 @@ const bodyParser = require('body-parser');
 const products = require('./routes/products');
 const sdc = require('./routes/sdc');
 
+const sqlConfig = require('./controller/index.js');
+const styles = require('./controller/models/styles.js');
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
@@ -22,6 +25,6 @@ app.listen(port, function() {
        if (err.errno === 'EADDRINUSE') {
           console.log(`Port ${port} is already in use!`);
        } else {
-         console.log(`Error returned: ${err}`);
+         console.log(`Error returned for express server: ${err}`);
         }
       });
