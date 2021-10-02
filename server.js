@@ -11,6 +11,9 @@ const sdc = require('./routes/sdc');
 
 const skuSchema = require('./controller/models/skus');
 const stylesSchema = require('./controller/models/styles');
+const featuresSchema = require('./controller/models/features');
+const productSchema = require('./controller/models/product');
+const photoSchema = require('./controller/models/photos');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -23,5 +26,8 @@ app.listen(port, function() {
   console.log(`Sever is listening on port ${port}`);
   }).on('error', (err) => (console.log('Express.js ' + err)));
 
-skuSchema();
-stylesSchema();
+// skuSchema();
+// stylesSchema();
+// featuresSchema();
+// productSchema();
+photoSchema();
