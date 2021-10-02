@@ -10,6 +10,7 @@ const products = require('./routes/products');
 const sdc = require('./routes/sdc');
 
 const skuSchema = require('./controller/models/skus');
+const stylesSchema = require('./controller/models/styles');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -19,6 +20,8 @@ app.use('/products', products);
 app.use('/sdc', sdc);
 
 app.listen(port, function() {
-  skuSchema();
   console.log(`Sever is listening on port ${port}`);
   }).on('error', (err) => (console.log('Express.js ' + err)));
+
+skuSchema();
+stylesSchema();
