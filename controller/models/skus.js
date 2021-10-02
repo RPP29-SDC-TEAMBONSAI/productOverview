@@ -8,7 +8,7 @@ const skuTable = async () => {
    console.log(`MSSQL connection opening with ${sqlConfig.server}...`)
    console.log('Trying to make skus table...')
    pool = await sql.connect(sqlConfig)
-   const { tableset } = await sql.query` IF NOT EXISTS (SELECT [name] FROM sys.tables WHERE [name] = 'sku')
+   const { tableset } = await sql.query` IF NOT EXISTS (SELECT [name] FROM sys.tables WHERE [name] = 'skus')
    CREATE TABLE skus (
     id bigint IDENTITY(1,1) PRIMARY KEY CLUSTERED NOT NULL
     , styleId bigint NOT NULL
