@@ -30,4 +30,4 @@ app.listen(port, function() {
 // stylesSchema();
 // featuresSchema();
 // productSchema();
-photoSchema();
+// photoSchema();
