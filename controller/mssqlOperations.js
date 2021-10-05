@@ -49,8 +49,11 @@ async function getRelated(productId) {
     let pool = await sql.connect(sqlConfig);
     let product = await pool.request()
     .input('input_parameter', sql.Int, productId)
-    .query("SELECT * from Product where Id = @input_parameter");
-    return  product.recordsets;
+    .query("select id from styles where productId = @input_parameter");
+
+    let related = product.recordsets[0].map(a=> parseInt(a.id,10));
+
+    return related;
   }
   catch (error) {
     console.log(error);
