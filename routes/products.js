@@ -28,7 +28,7 @@ router.get('/:product_id', (req, res, next) => {
 /* GET /products/:prodcut_id/styles */
 router.get('/:product_id/styles', (req, res, next) => {
   db.getStyles(req.params.product_id).then((data) => {
-    res.status(200).send(data[0][0])
+    res.status(200).send(data)
   })
   .catch(err => (console.log('Error with /products ', err)))
 })

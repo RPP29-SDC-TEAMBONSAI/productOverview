@@ -28,19 +28,30 @@ async function getProduct(productId) {
   }
   catch (error) {
     console.log(error);
+    return
   }
 }
 
 async function getStyles(productId) {
+  const styles = {};
+  const relatedArray = getRelated(productId);
+
   try {
     let pool = await sql.connect(sqlConfig);
-    let product = await pool.request()
+
+    styles.productId = productId;
+    let related = await pool.request()
     .input('input_parameter', sql.Int, productId)
-    .query("SELECT * from Product where Id = @input_parameter");
-    return  product.recordsets;
+    .query("select style_id = id, name, original_price, sale_price, default_style from styles where productId= @input_parameter");
+
+    styles.results = related.recordsets[0];
+
+
+    return styles;
   }
   catch (error) {
-    console.log(error);
+    console.log(error)
+    return
   }
 }
 
@@ -57,6 +68,7 @@ async function getRelated(productId) {
   }
   catch (error) {
     console.log(error);
+    return
   }
 }
 
@@ -79,6 +91,7 @@ async function getSDC (productArray) {
   }
   catch (error) {
     console.log(error);
+    return
   }
 }
 
