@@ -15,7 +15,7 @@ const featuresSchema = require('./controller/models/features');
 const productSchema = require('./controller/models/product');
 const photoSchema = require('./controller/models/photos');
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 
