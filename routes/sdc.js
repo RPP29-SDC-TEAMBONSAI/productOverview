@@ -12,7 +12,6 @@ router.get('/', (req, res, next) => {
       var promise = await db.getSDC(ids[i])
       relatedArray.push(promise)
     }
-    console.log(relatedArray)
     res.status(200).send(relatedArray[0][0])
   }
   related();
