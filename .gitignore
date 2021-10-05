@@ -1,0 +1,11 @@
+#Environment variables
+.env
+
+# Node Modules
+node_modules
+
+#packages
+package-lock.json
+
+#Local Test Files
+testTableQuery.js
