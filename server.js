@@ -26,8 +26,8 @@ app.listen(port, function() {
   console.log(`Sever is listening on port ${port}`);
   }).on('error', (err) => (console.log('Express.js ' + err)));
 
-// skuSchema();
-// stylesSchema();
-// featuresSchema();
-// productSchema();
-// photoSchema();
+skuSchema();
+stylesSchema();
+featuresSchema();
+productSchema();
+photoSchema();
