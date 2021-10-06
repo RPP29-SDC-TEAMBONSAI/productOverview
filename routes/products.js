@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express();
-const db = require('/home/bofowzi/Documents/rpp29/sdc/productOverview/controller/mssqlOperations.js');
+const db = require('../controller/mssqlOperations.js');
 
 // const wrap = fn => (...args) => fn(...args).catch(args[2]);
 
