@@ -34,7 +34,6 @@ async function getProduct(productId) {
 
 async function getStyles(productId) {
   const styles = {};
-  const relatedArray = getRelated(productId);
 
   try {
     let pool = await sql.connect(sqlConfig);
@@ -42,11 +41,38 @@ async function getStyles(productId) {
     styles.productId = productId;
     let related = await pool.request()
     .input('input_parameter', sql.Int, productId)
-    .query("select style_id = id, name, original_price, sale_price, default_style from styles where productId= @input_parameter");
+    .query("select style_id = id, name, original_price, sale_price, 'default?' = default_style from styles where productId= @input_parameter");
 
     styles.results = related.recordsets[0];
 
+    for (const style of styles.results) {
+      style.photos = [];
+      style.skus = {};
 
+      if (style["default?"] == "1") {
+        style["default?"] = true;
+      }
+      else if (style["default?"] == "0") {
+        style["default?"] = false;
+      }
+
+      let stylePhotos = await pool.request()
+      .input('input_parameter', sql.BigInt, style.style_id)
+      .query("select url from photos where styleId= @input_parameter");
+
+      stylePhotos.recordsets[0].forEach((link) => {
+        let linkArray = link.url.split(",")
+        style.photos.push({"thumbnail_url":JSON.parse(linkArray[0]), "url":JSON.parse(linkArray[1])})
+      })
+
+      let styleSkus = await pool.request()
+      .input('input_parameter', sql.BigInt, style.style_id)
+      .query("select id, size, quantity from skus where styleId= @input_parameter");
+
+      styleSkus.recordsets[0].forEach((sku) => {
+        style.skus[sku.id] = {"quantity" : JSON.parse(sku.quantity), "size": JSON.parse(sku.size)}
+      })
+    }
     return styles;
   }
   catch (error) {

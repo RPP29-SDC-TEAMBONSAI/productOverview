@@ -26,8 +26,8 @@ app.listen(port, function() {
   console.log(`Backend is listening on port ${port}`);
   }).on('error', (err) => (console.log('Backend ' + err)));
 
-skuSchema();
-stylesSchema();
-featuresSchema();
-productSchema();
-photoSchema();
+// skuSchema();
+// stylesSchema();
+// featuresSchema();
+// productSchema();
+// photoSchema();
