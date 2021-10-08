@@ -16,7 +16,7 @@ async function getProduct(productId) {
   let formatFeatures = {};
   try {
     let pool = await sql.connect(sqlConfig);
-    console.log('productId ', productId)
+    // console.log('productId ', productId)
     let product = await pool.request()
     .input('input_parameter', sql.Int, productId)
     .query("SELECT *, features = (SELECT features.feature, features.value FROM features WHERE product.id = features.product_id FOR JSON PATH, INCLUDE_NULL_VALUES ) FROM product WHERE product.id IN (@input_parameter)");
@@ -24,6 +24,11 @@ async function getProduct(productId) {
     formatFeatures = JSON.parse(product.recordsets[0][0].features);
 
     product.recordsets[0][0].features = formatFeatures;
+
+    // console.log('Before ',  product.recordsets[0][0].id )
+    product.recordsets[0][0].id = parseInt(product.recordsets[0][0].id, 10)
+    // console.log('After ', typeof product.recordsets[0][0].id )
+
     return product.recordsets;
   }
   catch (error) {
@@ -38,7 +43,7 @@ async function getStyles(productId) {
   try {
     let pool = await sql.connect(sqlConfig);
 
-    styles.productId = productId;
+    styles.product_id = productId;
     let related = await pool.request()
     .input('input_parameter', sql.Int, productId)
     .query("select style_id = id, name, original_price, sale_price, 'default?' = default_style from styles where productId= @input_parameter");
