@@ -1,5 +1,5 @@
 const sql = require('mssql');
-const sqlConfig = require('/home/bofowzi/Documents/rpp29/sdc/productOverview/controller/index');
+const sqlConfig = require('../index');
 
 const skuTable = async () => {
   let pool;
