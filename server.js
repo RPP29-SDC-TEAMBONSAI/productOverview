@@ -19,6 +19,8 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use('/loaderio-f09a3d3082130b58301db9627cdb1b37.txt', express.static(path.join(__dirname, '../loaderio-f09a3d3082130b58301db9627cdb1b37.txt')));
+
 app.use('/products', products);
 app.use('/sdc', sdc);
 
