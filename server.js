@@ -23,8 +23,8 @@ app.use('/products', products);
 app.use('/sdc', sdc);
 
 app.listen(port, function() {
-  console.log(`Sever is listening on port ${port}`);
-  }).on('error', (err) => (console.log('Express.js ' + err)));
+  console.log(`Backend is listening on port ${port}`);
+  }).on('error', (err) => (console.log('Backend ' + err)));
 
 // skuSchema();
 // stylesSchema();

@@ -4,8 +4,10 @@ const sqlConfig = require('/home/bofowzi/Documents/rpp29/sdc/productOverview/con
 async function getProducts () {
   try {
     let pool = await sql.connect(sqlConfig);
-    let products = await pool.request().query("SELECT * from Product");
-    return  products.recordsets;
+    let products = await pool.request().query("SELECT TOP (10) [id], [name], [slogan], [description] ,[category] ,[default_price] FROM [Test].[dbo].[product]");
+
+    products.recordsets[0][0].id = parseInt(products.recordsets[0][0].id, 10)
+    return  products.recordsets[0];
   }
   catch (error) {
     console.log(error);
@@ -16,7 +18,7 @@ async function getProduct(productId) {
   let formatFeatures = {};
   try {
     let pool = await sql.connect(sqlConfig);
-    console.log('productId ', productId)
+    // console.log('productId ', productId)
     let product = await pool.request()
     .input('input_parameter', sql.Int, productId)
     .query("SELECT *, features = (SELECT features.feature, features.value FROM features WHERE product.id = features.product_id FOR JSON PATH, INCLUDE_NULL_VALUES ) FROM product WHERE product.id IN (@input_parameter)");
@@ -24,6 +26,11 @@ async function getProduct(productId) {
     formatFeatures = JSON.parse(product.recordsets[0][0].features);
 
     product.recordsets[0][0].features = formatFeatures;
+
+    // console.log('Before ',  product.recordsets[0][0].id )
+    product.recordsets[0][0].id = parseInt(product.recordsets[0][0].id, 10)
+    // console.log('After ', typeof product.recordsets[0][0].id )
+
     return product.recordsets;
   }
   catch (error) {
@@ -34,19 +41,45 @@ async function getProduct(productId) {
 
 async function getStyles(productId) {
   const styles = {};
-  const relatedArray = getRelated(productId);
 
   try {
     let pool = await sql.connect(sqlConfig);
 
-    styles.productId = productId;
+    styles.product_id = productId;
     let related = await pool.request()
     .input('input_parameter', sql.Int, productId)
-    .query("select style_id = id, name, original_price, sale_price, default_style from styles where productId= @input_parameter");
+    .query("select style_id = id, name, original_price, sale_price, 'default?' = default_style from styles where productId= @input_parameter");
 
     styles.results = related.recordsets[0];
 
+    for (const style of styles.results) {
+      style.photos = [];
+      style.skus = {};
 
+      if (style["default?"] == "1") {
+        style["default?"] = true;
+      }
+      else if (style["default?"] == "0") {
+        style["default?"] = false;
+      }
+
+      let stylePhotos = await pool.request()
+      .input('input_parameter', sql.BigInt, style.style_id)
+      .query("select url from photos where styleId= @input_parameter");
+
+      stylePhotos.recordsets[0].forEach((link) => {
+        let linkArray = link.url.split(",")
+        style.photos.push({"thumbnail_url":JSON.parse(linkArray[0]), "url":JSON.parse(linkArray[1])})
+      })
+
+      let styleSkus = await pool.request()
+      .input('input_parameter', sql.BigInt, style.style_id)
+      .query("select id, size, quantity from skus where styleId= @input_parameter");
+
+      styleSkus.recordsets[0].forEach((sku) => {
+        style.skus[sku.id] = {"quantity" : JSON.parse(sku.quantity), "size": JSON.parse(sku.size)}
+      })
+    }
     return styles;
   }
   catch (error) {
