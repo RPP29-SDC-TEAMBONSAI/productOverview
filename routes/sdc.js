@@ -1,9 +1,14 @@
 const express = require('express');
 const router = express();
-const db = require('/home/bofowzi/Documents/rpp29/sdc/productOverview/controller/mssqlOperations.js');
+const db = require('../controller/mssqlOperations.js');
 
 /* ROUTE FOR WILL CASEY  */
 router.get('/', (req, res, next) => {
+
+  if (req.query.ids = "") {
+    req.query.ids = '1,2,3'
+  }
+
   const ids = req.query.ids.split(',').map(Number);
   const relatedArray = [];
   console.log(ids);

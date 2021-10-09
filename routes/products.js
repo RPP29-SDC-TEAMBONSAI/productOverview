@@ -10,8 +10,8 @@ const db = require('/home/bofowzi/Documents/rpp29/sdc/productOverview/controller
 router.get('/', (req, res, next) => {
   // console.log('Inside the products route ')
   db.getProducts().then((data) => {
-    console.log(data);
-    res.status(200).send(data.recordsets)
+    // console.log(data);
+    res.status(200).send(data)
   })
   .catch(err => (console.log('Error with /products ', err)))
 });
@@ -19,6 +19,11 @@ router.get('/', (req, res, next) => {
 /* GET /products/:product_id */
 router.get('/:product_id', (req, res, next) => {
   // console.log('Inside the products id route')
+
+  if(req.params.product_id === ":product_id") {
+    req.params.product_id = 12
+  }
+
   db.getProduct(req.params.product_id).then((data) => {
     res.status(200).send(data[0][0])
   })
@@ -27,6 +32,10 @@ router.get('/:product_id', (req, res, next) => {
 
 /* GET /products/:prodcut_id/styles */
 router.get('/:product_id/styles', (req, res, next) => {
+  if(req.params.product_id === ":product_id") {
+    req.params.product_id = 15
+  }
+
   db.getStyles(req.params.product_id).then((data) => {
     res.status(200).send(data)
   })
@@ -36,6 +45,10 @@ router.get('/:product_id/styles', (req, res, next) => {
 
 /* GET /products/:product_id/related */
 router.get('/:product_id/related', (req, res, next) => {
+  if(req.params.product_id === ":product_id") {
+    req.params.product_id = 10
+  }
+
   db.getRelated(req.params.product_id).then((data) => {
     res.status(200).send(data)
   })

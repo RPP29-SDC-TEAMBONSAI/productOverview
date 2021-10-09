@@ -4,8 +4,10 @@ const sqlConfig = require('/home/bofowzi/Documents/rpp29/sdc/productOverview/con
 async function getProducts () {
   try {
     let pool = await sql.connect(sqlConfig);
-    let products = await pool.request().query("SELECT * from Product");
-    return  products.recordsets;
+    let products = await pool.request().query("SELECT TOP (10) [id], [name], [slogan], [description] ,[category] ,[default_price] FROM [Test].[dbo].[product]");
+
+    products.recordsets[0][0].id = parseInt(products.recordsets[0][0].id, 10)
+    return  products.recordsets[0];
   }
   catch (error) {
     console.log(error);
