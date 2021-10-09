@@ -1,5 +1,5 @@
 const sql = require('mssql');
-const sqlConfig = require('/home/bofowzi/Documents/rpp29/sdc/productOverview/controller/index.js');
+const sqlConfig = require('./index.js');
 
 async function getProducts () {
   try {
@@ -114,11 +114,11 @@ async function getSDC (productArray) {
     .input('input_parameter', sql.Int, productArray)
     .query("select product.id, product.name, product.category, product.default_price, salePrice = (select sale_price from styles where (product.id = styles.productId AND styles.default_style = 1) FOR JSON PATH, INCLUDE_NULL_VALUES), photos = (select url from photos where product.id = photos.id FOR JSON PATH, INCLUDE_NULL_VALUES ) from product where product.id= @input_parameter");
 
-    formatPrice = JSON.parse(product.recordsets[0][0].salePrice);
-    formatPhotos = JSON.parse(product.recordsets[0][0].photos);
+    // formatPrice = JSON.parse(product.recordsets[0][0].salePrice);
+    // formatPhotos = JSON.parse(product.recordsets[0][0].photos);
 
-    product.recordsets[0][0].salePrice = formatPrice;
-    product.recordsets[0][0].photos = formatPhotos;
+    // product.recordsets[0][0].salePrice = formatPrice;
+    // product.recordsets[0][0].photos = formatPhotos;
 
     return  product.recordsets;
   }
