@@ -7,9 +7,9 @@ const sqlConfig = {
   server: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT, 10),
   pool: {
-    max: 30,
+    max: 10,
     min: 0,
-    idleTimeoutMillis: 50000
+    idleTimeoutMillis: 30000
   },
   options: {
     encrypt: false, // for azure

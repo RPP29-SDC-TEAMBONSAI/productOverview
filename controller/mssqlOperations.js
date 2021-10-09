@@ -6,6 +6,9 @@ const sqlConfig = require('./index.js');
 const pool1 = new sql.ConnectionPool(sqlConfig);
 const pool1Connect = pool1.connect();
 
+const pool2 = new sql.ConnectionPool(sqlConfig);
+const pool2Connect = pool2.connect();
+
 pool1.on('error', err => {
   console.log('error ', err);
 })
@@ -52,15 +55,15 @@ async function getProduct(productId) {
 
 async function getStyles(productId) {
 
-  // await pool1Connect;
+  await pool2Connect;
 
   const styles = {};
 
   try {
-    let pool = await sql.connect(sqlConfig);
+    // let pool = await sql.connect(sqlConfig);
 
     styles.product_id = productId;
-    let related = await pool.request()
+    let related = await pool1.request()
     .input('input_parameter', sql.Int, productId)
     .query("select style_id = id, name, original_price, sale_price, 'default?' = default_style from styles where productId= @input_parameter");
 
@@ -77,7 +80,7 @@ async function getStyles(productId) {
         style["default?"] = false;
       }
 
-      let stylePhotos = await pool.request()
+      let stylePhotos = await pool1.request()
       .input('input_parameter', sql.BigInt, style.style_id)
       .query("select url from photos where styleId= @input_parameter");
 
@@ -86,7 +89,7 @@ async function getStyles(productId) {
         style.photos.push({"thumbnail_url":JSON.parse(linkArray[0]), "url":JSON.parse(linkArray[1])})
       })
 
-      let styleSkus = await pool.request()
+      let styleSkus = await pool1.request()
       .input('input_parameter', sql.BigInt, style.style_id)
       .query("select id, size, quantity from skus where styleId= @input_parameter");
 
@@ -124,7 +127,7 @@ async function getRelated(productId) {
 
 async function getSDC (productArray) {
 
-  await pool1Connect;
+  await pool2Connect;
 
   let formatPrice = {}
   let formatPhotos = {}
