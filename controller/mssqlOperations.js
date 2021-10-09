@@ -1,10 +1,20 @@
 const sql = require('mssql');
 const sqlConfig = require('./index.js');
 
+// const pool = await sql.connect(sqlConfig);
+
+const pool1 = new sql.ConnectionPool(sqlConfig);
+const pool1Connect = pool1.connect();
+
+pool1.on('error', err => {
+  console.log('error ', err);
+})
+
 async function getProducts () {
+  await pool1Connect;
   try {
-    let pool = await sql.connect(sqlConfig);
-    let products = await pool.request().query("SELECT TOP (10) [id], [name], [slogan], [description] ,[category] ,[default_price] FROM [Test].[dbo].[product]");
+    // let pool = await sql.connect(sqlConfig);
+    let products = await pool1.request().query("SELECT TOP (10) [id], [name], [slogan], [description] ,[category] ,[default_price] FROM [Test].[dbo].[product]");
 
     products.recordsets[0][0].id = parseInt(products.recordsets[0][0].id, 10)
     return  products.recordsets[0];
@@ -15,11 +25,12 @@ async function getProducts () {
 }
 
 async function getProduct(productId) {
+  await pool1Connect;
   let formatFeatures = {};
   try {
-    let pool = await sql.connect(sqlConfig);
+    // let pool = await sql.connect(sqlConfig);
     // console.log('productId ', productId)
-    let product = await pool.request()
+    let product = await pool1.request()
     .input('input_parameter', sql.Int, productId)
     .query("SELECT *, features = (SELECT features.feature, features.value FROM features WHERE product.id = features.product_id FOR JSON PATH, INCLUDE_NULL_VALUES ) FROM product WHERE product.id IN (@input_parameter)");
 
@@ -40,13 +51,16 @@ async function getProduct(productId) {
 }
 
 async function getStyles(productId) {
+
+  await pool1Connect;
+
   const styles = {};
 
   try {
-    let pool = await sql.connect(sqlConfig);
+    // let pool = await sql.connect(sqlConfig);
 
     styles.product_id = productId;
-    let related = await pool.request()
+    let related = await pool1.request()
     .input('input_parameter', sql.Int, productId)
     .query("select style_id = id, name, original_price, sale_price, 'default?' = default_style from styles where productId= @input_parameter");
 
@@ -63,7 +77,7 @@ async function getStyles(productId) {
         style["default?"] = false;
       }
 
-      let stylePhotos = await pool.request()
+      let stylePhotos = await pool1.request()
       .input('input_parameter', sql.BigInt, style.style_id)
       .query("select url from photos where styleId= @input_parameter");
 
@@ -72,7 +86,7 @@ async function getStyles(productId) {
         style.photos.push({"thumbnail_url":JSON.parse(linkArray[0]), "url":JSON.parse(linkArray[1])})
       })
 
-      let styleSkus = await pool.request()
+      let styleSkus = await pool1.request()
       .input('input_parameter', sql.BigInt, style.style_id)
       .query("select id, size, quantity from skus where styleId= @input_parameter");
 
@@ -89,9 +103,12 @@ async function getStyles(productId) {
 }
 
 async function getRelated(productId) {
+
+  await pool1Connect;
+
   try {
-    let pool = await sql.connect(sqlConfig);
-    let product = await pool.request()
+    // let pool = await sql.connect(sqlConfig);
+    let product = await pool1.request()
     .input('input_parameter', sql.Int, productId)
     .query("select id from styles where productId = @input_parameter");
 
@@ -106,11 +123,14 @@ async function getRelated(productId) {
 }
 
 async function getSDC (productArray) {
+
+  await pool1Connect;
+
   let formatPrice = {}
   let formatPhotos = {}
   try {
-    let pool = await sql.connect(sqlConfig);
-    let product = await pool.request()
+    // let pool = await sql.connect(sqlConfig);
+    let product = await pool1.request()
     .input('input_parameter', sql.Int, productArray)
     .query("select product.id, product.name, product.category, product.default_price, salePrice = (select sale_price from styles where (product.id = styles.productId AND styles.default_style = 1) FOR JSON PATH, INCLUDE_NULL_VALUES), photos = (select url from photos where product.id = photos.id FOR JSON PATH, INCLUDE_NULL_VALUES ) from product where product.id= @input_parameter");
 
