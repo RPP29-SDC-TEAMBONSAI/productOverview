@@ -1,0 +1,14 @@
+services:
+  sql-server-db:
+    container_name: sdc-products
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "Learn1234!"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - mssql-volume:/var/opt/mssql
+volumes:
+  mssql-volume:
+
